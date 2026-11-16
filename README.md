@@ -1,9 +1,5 @@
 # Love Voucher Book
 
-Two pages for Chicaaaaa:
-
-- `/` is the love voucher booklet.
-- `/date/` is the date scheduler (React, Tailwind, Framer Motion). Source is in `date-src/`, and the built site is committed in `date/`.
 
 A one-page love voucher booklet for Chicaaaaa: 7 redeemable vouchers and a scratch-to-reveal surprise.
 
@@ -33,11 +29,3 @@ Keep real values in Vercel only, never in this repo.
 
 - Redeemed vouchers are remembered in the browser (`localStorage`), per device.
 - A redeemed voucher also offers a WhatsApp button with a ready message.
-
-## Date scheduler
-
-Chica picks a vibe, a place (or her own), a day, a time and anything extra, then taps "Send to Chico".
-That posts to `/api/date`, which uses the same alert channels as the vouchers.
-She can also send the plan on WhatsApp or copy a share link.
-
-To change it: edit `date-src/`, then run `cd date-src && npm install && OUT_DIR=../date npx vite build` and commit `date/`.
