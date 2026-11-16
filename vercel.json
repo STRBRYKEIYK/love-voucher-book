@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/vouchers", "destination": "/index.html" },
+    { "source": "/vouchers/", "destination": "/index.html" },
+    { "source": "/vouchers/img/:file", "destination": "/img/:file" },
+    { "source": "/vouchers/api/redeem", "destination": "/api/redeem" }
+  ]
+}

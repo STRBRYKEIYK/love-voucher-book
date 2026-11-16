@@ -164,9 +164,9 @@ footer{margin-top:40px;text-align:center}
     <h1><span>Love</span><span>Voucher<svg class="hrt" aria-hidden="true"><use href="#h"/></svg></span><span><em>Book</em></span></h1>
 
     <div class="strip">
-      <figure><img src="img/p1.jpg" alt="Chicoo at Chicaaa na naka-cowboy hat sa photobooth"><figcaption>COWBOY AT COWGIRL</figcaption></figure>
-      <figure><img src="img/p2.jpg" alt="Magkatugmang sombrero nina Chicoo at Chicaaa"><figcaption>MATCHING HATS</figcaption></figure>
-      <figure><img src="img/p3.jpg" alt="Kiss sa pisngi sa photobooth"><figcaption>KISS SA PISNGI</figcaption></figure>
+      <figure><img src="/vouchers/img/p1.jpg" alt="Chicoo at Chicaaa na naka-cowboy hat sa photobooth"><figcaption>COWBOY AT COWGIRL</figcaption></figure>
+      <figure><img src="/vouchers/img/p2.jpg" alt="Magkatugmang sombrero nina Chicoo at Chicaaa"><figcaption>MATCHING HATS</figcaption></figure>
+      <figure><img src="/vouchers/img/p3.jpg" alt="Kiss sa pisngi sa photobooth"><figcaption>KISS SA PISNGI</figcaption></figure>
     </div>
 
     <dl class="terms">
@@ -280,6 +280,17 @@ footer{margin-top:40px;text-align:center}
 <script>
 (function(){
   var KEY="chicoo-voucher-book-v1";
+  /* Moved from voucher.keicodes.dev to chica.keicodes.dev/vouchers. localStorage does not cross origins,
+     so the old address hands her saved progress over in the URL hash and it is merged in once here. */
+  try{
+    var hm=/^#m=(.*)$/.exec(location.hash);
+    if(hm){
+      var inc=JSON.parse(decodeURIComponent(hm[1])),cur=JSON.parse(localStorage.getItem(KEY)||"null")||{};
+      var u=function(a,b){var o=[];(a||[]).concat(b||[]).forEach(function(x){if(typeof x==="number"&&o.indexOf(x)===-1)o.push(x)});return o};
+      localStorage.setItem(KEY,JSON.stringify({r:u(cur.r,inc.r),s:!!(cur.s||inc.s),k:u(cur.k,inc.k)}));
+    }
+    if(location.hash.indexOf("#m=")===0)history.replaceState(null,"",location.pathname+location.search);
+  }catch(e){}
   var state={r:[],s:false,k:[]};
   try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.r)){state.r=p.r.filter(function(x){return x>=1&&x<=7});state.s=!!p.s;if(Array.isArray(p.k))state.k=p.k.filter(function(x){return x>=1&&x<=8})}}}catch(e){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -289,7 +300,7 @@ footer{margin-top:40px;text-align:center}
   var NOTE_OK="NAKARATING NA SA AKIN ANG REDEEM MO, ASAWAAAA! PWEDE MO PA AKONG I-CHAT SA WHATSAPP.";
   function notify(num,done){
     try{
-      fetch("/api/redeem",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:num})})
+      fetch("/vouchers/api/redeem",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:num})})
         .then(function(r){return r.ok?r.json():null})
         .then(function(j){
           if(j&&j.ok===true){
