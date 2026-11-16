@@ -277,11 +277,26 @@ footer{margin-top:40px;text-align:center}
 <script>
 (function(){
   var KEY="chicoo-voucher-book-v1";
-  var state={r:[],s:false};
-  try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.r)){state.r=p.r.filter(function(x){return x>=1&&x<=7});state.s=!!p.s}}}catch(e){}
+  var state={r:[],s:false,k:[]};
+  try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.r)){state.r=p.r.filter(function(x){return x>=1&&x<=7});state.s=!!p.s;if(Array.isArray(p.k))state.k=p.k.filter(function(x){return x>=1&&x<=8})}}}catch(e){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 
   var nEl=document.getElementById("n");
+  var NOTE_ASK="I-SEND MO SA WHATSAPP PARA MALAMAN KO, ASAWAAAA.";
+  var NOTE_OK="NAKARATING NA SA AKIN ANG REDEEM MO, ASAWAAAA! PWEDE MO PA AKONG I-CHAT SA WHATSAPP.";
+  function notify(num,done){
+    try{
+      fetch("/api/redeem",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:num})})
+        .then(function(r){return r.ok?r.json():null})
+        .then(function(j){
+          if(j&&j.ok===true){
+            if(state.k.indexOf(num)===-1){state.k.push(num);save()}
+            if(done)done();
+          }
+        })
+        .catch(function(){});
+    }catch(e){}
+  }
   function msgFor(num,title){
     return "CHICOOO! GUSTO KO NANG I-REDEEM ANG VOUCHER #"+num+": "+title+". ASAWAAAAA 🥰";
   }
@@ -293,7 +308,7 @@ footer{margin-top:40px;text-align:center}
     var msg=msgFor(num,title);
     after.hidden=false;
     after.innerHTML="";
-    var s=document.createElement("small");s.textContent="I-SEND MO SA WHATSAPP PARA MALAMAN KO, ASAWAAAA.";
+    var s=document.createElement("small");s.textContent=state.k.indexOf(num)>-1?NOTE_OK:NOTE_ASK;li._note=s;
     var row=document.createElement("div");row.className="actions";row.style.marginTop="0";
     var a=document.createElement("a");a.className="btn";a.target="_blank";a.rel="noopener";
     a.href="https://wa.me/?text="+encodeURIComponent(msg);a.textContent="IPADALA KAY CHICOOO";
@@ -314,8 +329,10 @@ footer{margin-top:40px;text-align:center}
     b.addEventListener("click",function(){
       var num=+b.dataset.n;
       if(state.r.indexOf(num)===-1){state.r.push(num);save()}
-      paint(document.getElementById("v"+num),num,b.dataset.t,true);
+      var li=document.getElementById("v"+num);
+      paint(li,num,b.dataset.t,true);
       count();
+      notify(num,function(){if(li._note)li._note.textContent=NOTE_OK});
     });
   });
   state.r.forEach(function(num){
@@ -348,7 +365,7 @@ footer{margin-top:40px;text-align:center}
     if(revealed)return;revealed=true;
     cv.classList.add("gone");openRow.hidden=true;
     state.s=true;save();
-    if(animate){var r=box.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)}
+    if(animate){var r=box.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2);notify(8)}
   }
   function paintCover(){
     W=box.clientWidth;H=box.clientHeight;dpr=Math.min(2,window.devicePixelRatio||1);
