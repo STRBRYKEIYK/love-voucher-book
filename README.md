@@ -25,6 +25,11 @@ Turn channels on with environment variables in Vercel (see `.env.example`):
 
 Keep real values in Vercel only, never in this repo.
 
+## Where it lives
+
+The book is served at `https://chica.keicodes.dev/vouchers`. That site (the `kwento-natin` project) proxies `/vouchers` to this project, and `vercel.json` here maps `/vouchers/...` back to the files and `/api/redeem`.
+The old address `voucher.keicodes.dev` redirects there and hands over saved progress in the URL hash, because `localStorage` does not cross origins.
+
 ## Notes
 
 - Redeemed vouchers are remembered in the browser (`localStorage`), per device.

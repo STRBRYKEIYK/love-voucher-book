@@ -1,4 +1,13 @@
 <title>Love Voucher Book</title>
+<script>
+/* The book now lives at chica.keicodes.dev/vouchers. Send old links there and carry saved progress along. */
+(function(){
+  if(location.hostname!=="voucher.keicodes.dev")return;
+  var h="";
+  try{var raw=localStorage.getItem("chicoo-voucher-book-v1");if(raw)h="#m="+encodeURIComponent(raw)}catch(e){}
+  location.replace("https://chica.keicodes.dev/vouchers"+h);
+})();
+</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,900&display=swap">
 <style>
