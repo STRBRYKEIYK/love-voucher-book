@@ -134,6 +134,8 @@ footer{margin-top:40px;text-align:center}
 .motto{margin-top:26px;font-family:var(--font-display);font-style:italic;font-size:18px;line-height:1.3;text-wrap:balance}
 .fine{margin-top:20px;font-weight:700;font-size:9.5px;letter-spacing:.2em;color:var(--mute);display:flex;justify-content:center;align-items:center;gap:8px}
 .fine .hrt{color:var(--red)}
+.reset[disabled]{opacity:.4;cursor:not-allowed;text-decoration:none}
+.resetnote{margin:2px auto 0;max-width:34ch;font-weight:700;font-size:9px;letter-spacing:.14em;line-height:1.6;color:var(--mute)}
 .reset{margin-top:14px;background:none;border:0;color:var(--mute);font:500 10px var(--font-body);letter-spacing:.16em;text-transform:uppercase;text-decoration:underline;cursor:pointer;min-height:32px}
 
 /* floating hearts */
@@ -270,7 +272,8 @@ footer{margin-top:40px;text-align:center}
     <div class="sigline">LAGDA NI CHICOOO</div>
     <p class="motto">Ikaw lang, araw-araw, sa lahat ng Lunes.</p>
     <p class="fine"><svg class="hrt" aria-hidden="true"><use href="#h"/></svg> PARA KAY CHICAAAAA · 2:22 PM <svg class="hrt" aria-hidden="true"><use href="#h"/></svg></p>
-    <button class="reset" id="reset" type="button">I-RESET ANG MGA VOUCHER</button>
+    <button class="reset" id="reset" type="button" disabled>I-RESET ANG MGA VOUCHER</button>
+    <p class="resetnote" id="resetnote"></p>
   </footer>
 </div>
 
@@ -323,7 +326,13 @@ footer{margin-top:40px;text-align:center}
     if(animate){var r=btn.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)}
   }
   function selectMsg(el){try{var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}catch(e){}}
-  function count(){nEl.textContent=state.r.length}
+  function updateReset(){
+    var btn=document.getElementById("reset"),note=document.getElementById("resetnote");
+    var all=state.r.length===7&&state.s;
+    btn.disabled=!all;
+    note.textContent=all?"NA-REDEEM MO NA ANG LAHAT NG VOUCHER! PWEDE MO NANG I-RESET, ASAWAAAA.":"MA-UUNLOCK ANG RESET KAPAG NA-REDEEM MO NA ANG LAHAT NG VOUCHER, KASAMA ANG #8.";
+  }
+  function count(){nEl.textContent=state.r.length;updateReset()}
 
   document.querySelectorAll(".redeem").forEach(function(b){
     b.addEventListener("click",function(){
@@ -364,7 +373,7 @@ footer{margin-top:40px;text-align:center}
   function setRevealed(animate){
     if(revealed)return;revealed=true;
     cv.classList.add("gone");openRow.hidden=true;
-    state.s=true;save();
+    state.s=true;save();updateReset();
     if(animate){var r=box.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2);notify(8)}
   }
   function paintCover(){
@@ -433,6 +442,7 @@ footer{margin-top:40px;text-align:center}
   }
 
   document.getElementById("reset").addEventListener("click",function(){
+    if(this.disabled)return;
     try{localStorage.removeItem(KEY)}catch(e){}
     location.reload();
   });
